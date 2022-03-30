@@ -1,0 +1,14 @@
+.project-section {
+    padding: 20px;
+}
+.project-tasks {
+    display: flex;
+    justify-content: space-between;
+}
+.project-tasks div {
+    border: 1px salmon solid;
+    width: 32%;
+}
+.project-tasks div h2 {
+    text-align: center;
+}

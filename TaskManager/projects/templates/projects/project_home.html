@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'CSS/project.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="project-section">
+
+        <div class="section-title">
+            <h1>Projects</h1>
+        </div>
+    
+        <div class="project-tasks">
+            <div class="to_do">
+                <div class="top">
+                    <h2>To-Do</h2>
+
+                    <a href="">Add Task</a>
+                </div>
+
+                <span>Total:__</span>
+
+                <!-- replace with real data from database -->
+                <div class="information">
+
+                </div>
+
+            </div>
+            <div class="in_progress">
+                <h2>In-Progress</h2>
+            </div>
+            <div class="completed">
+                <h2>Completed</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}

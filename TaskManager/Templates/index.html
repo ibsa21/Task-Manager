@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load livereload_tags %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+    {% block extra_head %}{% endblock %}
+    <title>Task Manager</title>
+    
+</head>
+<body>
+    
+    <header>
+        <div class="header">
+            <div class="top-sidebar">
+                #Alpha<span>Team</span>
+            </div>
+
+            <div class="search">
+                <input type="text">
+            </div>
+            <div class="profile">
+                #<span>profile</span>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="sidebar">
+    
+            <div class="navigation">
+                <nav class="nav-bar">
+    
+                    <div class="nav-upper">
+                        <div class="overview nav-items">
+                            #Overview
+                        </div>
+                        <div class="stats nav-items">
+                            #Stats
+                        </div>
+                        <div class="Projects nav-items">
+                            <a href={% url 'projects' %}>#Projects</a>
+                        </div>
+                        <div class="chat nav-items">
+                            #Chat
+                        </div>
+                        <div class="timeline nav-items">
+                            #TimeLine
+                        </div>
+                    </div>
+    
+                    <div class="nav-lower">
+                        <div class="settings nav-items">
+                            #Setting
+                        </div>
+                        <div class="logout nav-items">
+                            #Logout
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    
+        <div class="main-section">
+            
+            {% block content %}
+            {% endblock %}
+
+        </div>
+    </main>
+</body>
+</html>

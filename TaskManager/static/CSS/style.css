@@ -1,0 +1,53 @@
+body {
+    width: 100%;
+    overflow: hidden;
+    margin: 0;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+.main-section {
+
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+
+}
+
+.header {
+    display: flex;
+    justify-content: space-around;
+    padding: 30px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 15px;
+
+}
+
+.sidebar {
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 15px;
+    padding: 20px;
+    width: 20%;
+    height: 100vh;
+}
+
+.top-sidebar {
+    font-size: 1.5em;
+}
+.top-sidebar span {
+    color: blue;
+}
+.navigation {
+    margin-left: 20px;
+}
+
+.nav-lower {
+    
+    margin-top: 250px;
+}
+.nav-items {
+    height: 2rem;
+    font-size: 1.2rem;
+}
