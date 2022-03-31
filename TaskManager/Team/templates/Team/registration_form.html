@@ -1,0 +1,26 @@
+{% extends 'template.html' %}
+{% load static %}
+
+{% block extra_head %}
+<title>Sign Up</title>
+    <link rel="stylesheet" href="{% static 'CSS/registration.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form">
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for form_data in form%}
+        <div class="form_input">
+            {{form_data.label}}
+            <br>
+            {{form_data}}
+        </div>
+        {% endfor %}
+        {{form.errors}}
+        <input type="submit" value="Signup" class="submit-btn">
+        <label for="registered">Already have an account?</label>
+        <a href={% url 'login' %}>Login </a>
+    </form>
+</div>
+{% endblock %}

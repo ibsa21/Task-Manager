@@ -1,0 +1,44 @@
+{% extends 'template.html' %}
+{% load static %}
+
+{% block extra_head %}
+<title>Login</title>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+    integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'CSS/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form vertical-center">
+    <div class="user_card">
+        <h3 id="form-title">LOGIN</h3>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <div class="input-group">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                </div>
+                <input type="text" name="username" placeholder="Username..." class="form-control">
+            </div>
+            <div class="input-group">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-key"></i></span>
+                </div>
+                <input type="password" name="password" placeholder="Password..." class="form-control">
+            </div>
+
+            <div class="submit-btn btn">
+                <input class="btn login_btn" type="submit" value="Login">
+            </div>
+
+            <div class="no-account">
+                Don't have an account? <a href="{% url 'registration' %}">Sign Up</a>
+            </div>
+            {% for message in messages %}
+            <p id="message"> {{message}}</p>
+            {% endfor %}
+    </div>
+    </form>
+</div>
+</div>
+{% endblock %}

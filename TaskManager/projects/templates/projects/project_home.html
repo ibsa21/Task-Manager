@@ -8,7 +8,7 @@
 {% block content %}
 
     <div class="project-section">
-
+        <span>hello, {{request.user}}</span>
         <div class="section-title">
             <h1>Projects</h1>
         </div>
@@ -18,40 +18,88 @@
                 <div class="top">
                     <h2>To-Do</h2>
 
-                    <button class="btn"><a href="">Add Task</a></button>
+                    <button class="btn"><a href={% url 'create-task' %}>Add Task</a></button>
                 </div>
 
-                <span>Total:__</span>
+                <span>Total:{{no_todo}}</span>
 
                 <!-- replace with real data from database -->
-                <div class="information">
-                    <div class="topic-head">
-                        <span class="name">.Design</span>
-                        <input type="checkbox">
-                    </div>
-
-                    <div class="content-taks">
-                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptate totam eveniet magni in tempora, dolor facere iste dolore inventore, incidunt deleniti, et minima cupiditate iusto quod delectus ea veniam nihil.</p>
-                    </div>
-
-                    <div class="task-footer">
-                        <div class="person-contrib">
-                            p1
+                {% for task in todoTasks %}
+                    <div class="information">
+                        <div class="topic-head">
+                            <span class="name">{{task.task_name}}</span>
+                            <div>
+                                <label for="start">start</label>
+                                <input type="checkbox" name="start">
+                            </div>
                         </div>
 
-                        <div class="edit-delete">
-                            <a href="">Edit</a>
-                            <a href="">Delete</a>
+                        <div class="content-taks">
+                            <p>{{task.description}}</p>
+                        </div>
+
+                        <div class="task-footer">
+                            <div class="person-contrib">
+                               <a href=""> {{task.assigned_to.username}}</a>
+                            </div>
+
+                            <div class="edit-delete">
+                                <a href="">Edit</a>
+                                <a href="">Delete</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endfor %}
 
             </div>
             <div class="in_progress task">
                 <h2>In-Progress</h2>
+                <span>Total:{{no_inprogress}}</span>
+
+                {% for task in inprogress %}
+                <div class="information">
+                    <div class="topic-head">
+                        <span class="name">{{task.task_name}}</span>
+                        <div>
+                            <label for="completed">completed</label>
+                            <input type="checkbox" name="completed">
+                        </div>
+                    </div>
+
+                    <div class="content-taks">
+                        <p>{{task.description}}</p>
+                    </div>
+
+                    <div class="task-footer">
+                        <div class="person-contrib">
+                            {{task.host.username}}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
             </div>
             <div class="completed task">
                 <h2>Completed</h2>
+                <span>Total:{{no_completed}}</span>
+
+                {% for task in completed %}
+                <div class="information">
+                    <div class="topic-head">
+                        <span class="name">{{task.task_name}}</span>
+                    </div>
+
+                    <div class="content-taks">
+                        <p>{{task.description}}</p>
+                    </div>
+
+                    <div class="task-footer">
+                        <div class="person-contrib">
+                            {{task.host.username}}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
             </div>
         </div>
     </div>
