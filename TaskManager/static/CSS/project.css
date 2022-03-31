@@ -5,10 +5,35 @@
     display: flex;
     justify-content: space-between;
 }
-.project-tasks div {
+.project-tasks .task {
     border: 1px salmon solid;
-    width: 32%;
+    width: 30%;
+    padding: 10px;
 }
-.project-tasks div h2 {
-    text-align: center;
+
+.top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+a {
+    text-decoration: none;
+}
+.btn {
+    border: none;
+    height: 25px;
+    margin-top: 25px;
+    font-size: 1.2rem;
+    
+}
+.information {
+    margin: 10px;
+    border: 1px skyblue solid;
+    border-radius: 10px;
+    padding: 10px;
+}
+.topic-head, .task-footer {
+    display: flex;
+    justify-content: space-between;
 }
