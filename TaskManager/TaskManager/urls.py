@@ -8,6 +8,6 @@ from .import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home_page, name = "homepage" ),
-    path('profile/', include('projects.urls')),
-    path('my-team/', include('Team.urls')),
+    path('dashboard/', include('projects.urls')),
+    path('user/', include('Team.urls')),
 ]

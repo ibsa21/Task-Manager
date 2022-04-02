@@ -153,14 +153,16 @@ button {
 }
 
 .banner_main {
-     background: #0c0f38;
+     /* background: #0c0f38; */
      background-size: 100% 100%;
      background-repeat: no-repeat;
      padding-bottom: 90px;
 }
-
+.text-bg {
+     margin-top: 40px;
+}
 .text-bg h1 {
-     color: #fff;
+     color: #0c0f38;
      font-size: 60px;
      line-height: 80px;
      padding-bottom: 25px;
@@ -175,7 +177,6 @@ button {
 }
 
 .text-bg p {
-     color: #fff;
      font-size: 17px;
      line-height: 28px;
      padding: 40px 0;
@@ -183,8 +184,8 @@ button {
 
 .text-bg a {
      font-size: 16px;
-     background-color: #fff;
-     color: #000;
+     background-color: #0c0f38;
+     color: #fff;
      padding: 10px 0px;
      width: 100%;
      max-width: 190px;

@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block content %}
-
     <div class="project-section">
         <span>hello, {{request.user}}</span>
         <div class="section-title">
@@ -20,27 +19,27 @@
 
                     <button class="btn"><a href={% url 'create-task' %}>Add Task</a></button>
                 </div>
-
                 <span>Total:{{no_todo}}</span>
 
                 <!-- replace with real data from database -->
-                {% for task in todoTasks %}
+                <form action="" method=POST>
+                    {% csrf_token %}
+                    {% for task in todoTasks %}
                     <div class="information">
                         <div class="topic-head">
-                            <span class="name">{{task.task_name}}</span>
+                            <a href={% url 'task_detail' task.task_name %}><span class="name">{{task.task_name}}</span></a>
                             <div>
-                                <label for="start">start</label>
-                                <input type="checkbox" name="start">
+                                <label for="mark"></label>
+                                <input type="checkbox" name="mark"  class="checkbox" id="checkbox" value= {{task.id}} name="boxes">
                             </div>
                         </div>
 
-                        <div class="content-taks">
+                         <div class="content-taks">
                             <p>{{task.description}}</p>
-                        </div>
-
+                        </div> 
                         <div class="task-footer">
-                            <div class="person-contrib">
-                               <a href=""> {{task.assigned_to.username}}</a>
+                            <!-- YOu should think about this feature -->
+                            <div class="person-contrib" id="contrib">
                             </div>
 
                             <div class="edit-delete">
@@ -49,7 +48,9 @@
                             </div>
                         </div>
                     </div>
-                {% endfor %}
+                    {% endfor %}
+                    <button class="btn" value="submit" >Start Task</button>
+                </form>
 
             </div>
             <div class="in_progress task">
@@ -103,4 +104,15 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block extraScript %}
+<script>
+    
+function get_contrib(task){
+    console.log("hello")
+    console.log(task)
+}
+</script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> -->
+<script src="{% static 'js/mark_task.js' %}"></script>
 {% endblock %}

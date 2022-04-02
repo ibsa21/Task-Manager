@@ -23,7 +23,7 @@
                 <input type="text">
             </div>
             <div class="profile">
-                #<span>{{request.user}}</span>
+                <a href={% url 'my-profile' %}>#<span>{{request.user}}</span></a>
             </div>
         </div>
     </header>
@@ -35,7 +35,7 @@
     
                     <div class="nav-upper">
                         <div class="create_team nav-items">
-                            <a href={% url 'My-team'  %}>#MY Team</a>
+                            <a href={% url 'user-page'  %}>#MY Team</a>
                         </div>
                         <div class="overview nav-items">
                             #Overview
@@ -59,7 +59,7 @@
                             #Setting
                         </div>
                         <div class="logout nav-items">
-                            <a href={url 'login'}>#Logout</a>
+                            <a href={% url 'logout' %}>#Logout</a>
                         </div>
                     </div>
                 </nav>
@@ -73,5 +73,8 @@
 
         </div>
     </main>
+
+    {% block extraScript %}
+    {% endblock %}
 </body>
 </html>

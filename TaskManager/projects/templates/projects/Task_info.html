@@ -1,0 +1,32 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'CSS/task_info.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="task-detail">
+    <div class="task_name">
+        <h1>{{task.task_name}}</h1>
+    </div>
+
+    <div class="task-desciption">
+        <p>{{task.description}}</p>
+    </div>
+
+    <div class="contributors">
+        {% for name in task.assigned_to.all %}
+            Assigned To: {{name}}
+        {% endfor %}
+    </div>
+
+    <div class="task-detail-footer">
+        <div class="edit-delete">
+            <a href={% url 'update_task' task.id %}>Edit</a>
+            <a href={% url 'delete_task' task.id %}>delete</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

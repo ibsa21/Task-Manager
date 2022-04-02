@@ -1,0 +1,10 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'CSS/project.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>hello, {{request.user}}</h1>
+{% endblock %}
