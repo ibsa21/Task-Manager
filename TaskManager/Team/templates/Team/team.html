@@ -4,3 +4,7 @@
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'CSS/project.css' %}">
 {% endblock %}
+{% block content %}
+Hello, {{request.user}}
+{{user_list}}
+{% endblock %}

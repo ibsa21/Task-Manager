@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'projects',
     'Team',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ TEMPLATES = [
                 'projects.context_processors.access_completed_task',
                 'projects.context_processors.access_inprogress_task',
                 'projects.context_processors.access_todo_task',
+                'projects.context_processors.return_user',
             ],
         },
     },

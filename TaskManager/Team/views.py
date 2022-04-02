@@ -52,7 +52,7 @@ def login_page(request):
 
 @login_required(login_url='homepage')
 def Team(request):
-    return render(request, 'Team/team.html')
+    return render(request, 'dashboard/index.html')
 
 def logout_user(request):
     logout(request)

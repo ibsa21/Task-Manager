@@ -1,17 +1,22 @@
+from collections import UserDict
 from multiprocessing import context
 from operator import index
 from pyexpat import model
 from urllib import request
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .models import Task, TaskUser
+from Team.models import Team
 from .forms import TaskForm
 
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
-    return render(request, 'index.html')
-
+    user  = User.objects.get(username = request.user)
+    user_team = Team.objects.filter(members = user.id)
+    return render(request, 'dashboard/index.html', {'teams':user_team})
+    
 @login_required(login_url='login')
 def project_view(request):
 
@@ -26,6 +31,7 @@ def project_view(request):
 @login_required(login_url='login')
 def show_task_detail(request, pk):
     task_name = Task.objects.get(task_name=pk)
+    print(task_name)
     return render(request, 'projects/Task_info.html', {'task':task_name})
 
 def create_task(request):

@@ -1,0 +1,57 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'CSS/team_info.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="welcome">
+    <h1>hello, {{request.user}}</h1>
+
+</div>
+<div class="team_list">
+    <div class="team-section">
+        {% if teams %}
+            {% for team in teams %}
+
+                <div class="team box">
+                    <div class="team_name">
+                        {{team}}
+                    </div>
+
+                    <div class="outer-box">
+                        <div class="team-desc box">
+                            {{team.team_desciption}}
+                        </div>
+                    </div>
+                    <a href={% url 'projects' %}>projects</a>
+                    <div class="outer-box">
+                        <span>Tasks: </span>
+                        <div class="team_tasks box ">
+                            {% for task in team.team_task.all %}
+                                <a href={% url 'task_detail' task %}>{{task.task_name}}</a>
+                        {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="outer-box">
+                        <span>Members:</span>
+                        <div class="team-memb box">
+                            {% for name in team.members.all %}
+                                {{name}}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+                <div class="no_team box">
+                    <span>{{request.user}}</span>, you don't have a team registered. 
+                    <a href="">Create Team</a>
+                </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
