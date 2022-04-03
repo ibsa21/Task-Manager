@@ -6,6 +6,7 @@ from urllib import request
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from .models import Task, TaskUser
 from Team.models import Team
 from .forms import TaskForm
@@ -19,7 +20,6 @@ def home(request):
     
 @login_required(login_url='login')
 def project_view(request):
-
     task_name = Task.objects.all().only('task_name')
 
     list_tasks = {}
@@ -30,8 +30,8 @@ def project_view(request):
 
 @login_required(login_url='login')
 def show_task_detail(request, pk):
+    print(pk)
     task_name = Task.objects.get(task_name=pk)
-    print(task_name)
     return render(request, 'projects/Task_info.html', {'task':task_name})
 
 def create_task(request):
@@ -69,3 +69,22 @@ def update_task(request, pk):
 @login_required(login_url='login')
 def delete_task(request, pk):
     pass
+
+#show team tasks
+@login_required(login_url='login')
+def team_projects(request, pk):
+    team_name = Team.objects.get(id=pk)
+    team_tasks = Team.objects.get(id = pk)
+
+    return render(
+                    request, 'projects/team_tasks.html', 
+                    {
+                        'teamTasks':team_tasks.team_task.all() ,
+                        'team_name':team_name
+                        }
+                  )
+@login_required(login_url='login')
+def task_todo(request, pk):
+    print(pk)
+    return render(request
+    , 'projects/hello.html')

@@ -1,0 +1,117 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block extra_head %}
+
+<style>
+    .display-hide {
+        display: none;
+    }
+    .display-show {
+        display: block;
+    }
+
+    .nav-link {
+        background-color: #fff;
+        cursor: pointer;
+        color: rgb(8, 189, 189);
+        outline: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a href="#todo_tab" class="nav-link">To Do</a>
+            </li>
+            <li class="nav-item">
+                <a href="#inprogress_tab" class="nav-link">In In-Progress</a>
+            </li>
+            <li class="nav-item">
+                <a href="#completed_tab" class="nav-link">Completed</a>
+            </li>
+        </ul>
+    </div>
+    
+    <h4 class="h4 text-center">Todo - Tasks</h4>
+    <div class="card-body" id="todo_tab">
+        <div class="row">
+            {% for task in teamTasks %}
+            {% if task.task_status == 'TD' %}
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title"> <a href={% url 'task_detail' task %}><span
+                            class="name">{{task.task_name}}</span></a></h5>
+                    </div>
+                    <div class="card-body">
+
+                        <p class="card-text">{{task.description}}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                              Mark Completed
+                            </label>
+                          </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+            <!-- <a href="#" class="btn btn-primary">Mark Completed</a> -->
+        </div>
+    </div>
+    <hr>
+    <h4 class="h4 text-center">In-Progress Tasks</h4>
+    <div class="card-body" id="inprogress_tab">
+        <div class="row">
+            {% for task in teamTasks %}
+            {% if task.task_status == 'I' %}
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"> <a href={% url 'task_detail' task %}><span
+                                    class="name">{{task.task_name}}</span></a></h5>
+
+                        <p class="card-text">{{task.description}}</p>
+                        <a href="#" class="btn btn-primary">Mark Completed</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <hr>
+    <h4 class="h4 text-center">Completed Tasks</h4>
+    <div class="card-body" id="completed_tab">
+        <div class="row">
+            {% for task in teamTasks %}
+            {% if task.task_status == 'C' %}
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"> <a href={% url 'task_detail' task %}><span
+                                    class="name">{{task.task_name}}</span></a></h5>
+
+                        <p class="card-text">{{task.description}}</p>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="btn btn-primary">Mark Completed</a>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extraScript %}
+<script>
+
+</script>
+{% endblock %}

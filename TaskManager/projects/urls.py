@@ -10,6 +10,7 @@ urlpatterns = [
     path('update-task/<str:pk>/', views.update_task, name = "update_task"),
     path('delete-task/<str:pk>/', views.update_task, name = "delete_task"),
     path('projects/', views.project_view, name = "projects" ),
+    path('projects/ <str:pk>/', views.team_projects, name = "team_projects" ),
     path('create-task/', views.create_task, name = 'create-task'),
     path('projects/start-task/', views.start_task, name = 'start-task'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

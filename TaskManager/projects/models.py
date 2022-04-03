@@ -27,6 +27,7 @@ class Task(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     task_status = models.CharField(max_length=2, choices=status_choice, default=TODO)
+    
     def __str__(self):
         return self.task_name
     

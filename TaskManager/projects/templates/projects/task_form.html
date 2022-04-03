@@ -2,14 +2,66 @@
 {% load static %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="{% static 'CSS/form.css' %}">
+<link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<style>
+    .form-section {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 30px;
+    padding: 10px;
+    border: 1px solid lightblue;
+}
+</style>
 {% endblock %}
 {% block content %}
-<div>
-    <form method="POST" action="">
-        {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Submit">
-    </form>
+<div class="form-section">
+    <form action="" method="post">
+        {% csrf_token %}        
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="id_task_name">Task name:</label>
+            <input class = "form-control" id="id_task_name" maxlength="50" name="task_name" required="" type="text" />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="id_task_status">Task status:</label>
+            <select class="form-control" id="id_task_status" name="task_status">
+                <option selected="" value="TD">Todo Task</option>
+                <option value="C">Completed Task</option>
+                <option value="P">Inprogress Task</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="id_start_date">Start date:</label>
+            <input class="form-control" id="id_start_date" name="start_date" required="" type="text" />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="id_deadline_date">Deadline date:</label>
+            <input class="form-control" id="id_deadline_date" name="deadline_date" required="" type="text" />
+          </div>
+        </div>
+    
+        <div class="form-group">
+            <label for="id_assigned_to">Assigned to:</label>
+            <select class="form-control" id="id_assigned_to" multiple="" name="assigned_to" required="">
+                <option value="1">ibsa</option>
+                <option value="2">kena</option>
+                <option value="3">jima_dube</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="id_description">Description:</label>
+            <textarea class="form-control" cols="40" id="id_description" name="description" required="" rows="5">
+        </textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
 </div>
+{% endblock %}
+
+{% block extraScript %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 {% endblock %}

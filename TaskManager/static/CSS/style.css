@@ -4,9 +4,9 @@ body {
     margin: 0;
 }
 
-main {
+.main {
     display: flex;
-    flex-direction: row;
+    flex-direction: row !important;
 }
 
 .main-section {

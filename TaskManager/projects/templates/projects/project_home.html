@@ -27,7 +27,7 @@
                     {% for task in todoTasks %}
                     <div class="information">
                         <div class="topic-head">
-                            <a href={% url 'task_detail' task.task_name %}><span class="name">{{task.task_name}}</span></a>
+                            <a href={% url 'task_detail' task.task_name%}><span class="name">{{task.task_name}}</span></a>
                             <div>
                                 <label for="mark"></label>
                                 <input type="checkbox" name="mark"  class="checkbox" id="checkbox" value= {{task.id}} name="boxes">

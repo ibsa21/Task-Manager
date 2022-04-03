@@ -1,5 +1,9 @@
+from email.policy import default
+from multiprocessing.reduction import AbstractReducer
+from pickle import TRUE
 from projects.models import Task, TaskUser
-from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User, AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 
 class Team(models.Model):
