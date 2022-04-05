@@ -3,13 +3,57 @@
 
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'CSS/project.css' %}">
+    <style>
+        .project-section {
+    padding: 20px;
+}
+.project-tasks {
+    display: flex;
+    justify-content: space-between;
+}
+.project-tasks .task {
+    border: 1px salmon solid;
+    width: 30%;
+    padding: 10px;
+}
+
+.top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+a {
+    text-decoration: none;
+}
+.btn {
+    border: none;
+    height: 25px;
+    margin-top: 25px;
+    font-size: 1.2rem;
+    
+}
+.information {
+    margin: 10px;
+    border: 1px skyblue solid;
+    border-radius: 10px;
+    padding: 10px;
+}
+.topic-head, .task-footer {
+    display: flex;
+    justify-content: space-between;
+}
+    </style>
 {% endblock %}
 
 {% block content %}
+
     <div class="project-section">
         <span>hello, {{request.user}}</span>
         <div class="section-title">
             <h1>Projects</h1>
+<a href="">Create Projects</a>
+
         </div>
     
         <div class="project-tasks">

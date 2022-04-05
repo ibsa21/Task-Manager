@@ -52,6 +52,7 @@ TEMPLATES = [
                 'projects.context_processors.access_inprogress_task',
                 'projects.context_processors.access_todo_task',
                 'projects.context_processors.return_user',
+                'projects.context_processors.access_personal_projects',
             ],
         },
     },

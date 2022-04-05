@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load livereload_tags %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+    <link rel="stylesheet" href={% static 'CSS/bootstrap.min.css' %}>
+
+    {% block extra_head %}{% endblock %}
+    <title>Task Manager</title>
+    
+</head>
+<body>
+    
+    <header>
+        <div class="header">
+            <div class="top-sidebar">
+                <a href={% url  'home' %}>#Alpha<span>Team</span></a>
+            </div>
+
+            <div class="search">
+                <input type="text">
+            </div>
+            <div class="profile">
+                <a href={% url 'my-profile' %}>#<span>{{request.user}}</span></a>
+            </div>
+        </div>
+    </header>
+
+    {% block belowNav %}
+    {% endblock %}
+</body>
