@@ -43,6 +43,9 @@ def show_personal_projects(request, pk):
         completed = PersonalTask.objects.filter(filter_one & filter_two)
         pending = PersonalTask.objects.filter(filter_one & filter_four)
         ToDo = PersonalTask.objects.filter(filter_one & filter_three)
+        
+        #get the form
+        form = PersonalTaskForm(request.POST or None, request.FILES or None)
 
         context = {
             'to_dos': ToDo, 
@@ -102,7 +105,21 @@ def create_personalTask(request, pk):
 
     context = {'form':form , 'project_list':task_list}
     return render(request, 'projects/pt_form.html', context)
-    
+
+#edit tasks pt(personal_task)
+def update_personalTask(request, pk):
+    task = PersonalTask.objects.get(id = pk)
+
+    form  = PersonalTaskForm(instance=task)
+    if request.method == "POST":
+        form = PersonalTaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    context = {'form':form}
+    return render(request, 'projects/pt_form.html', context)
+
 
 @login_required(login_url='login')
 def show_task_detail(request, pk):

@@ -16,6 +16,7 @@ urlpatterns = [
     path('show-projects/<str:pk>', views.show_personal_projects, name = 'view-pp' ),
     path('personal-project/', views.create_personalProject, name = "create-pp"),
     path('personal-task/<str:pk>', views.create_personalTask, name = "create-pt"),
+    path('update-pt/<str:pk>', views.update_personalTask, name = "update-personalTask"),
 
     #task-links
     path('task/<str:pk>/', views.show_task_detail, name = "task_detail"),

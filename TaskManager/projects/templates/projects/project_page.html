@@ -9,20 +9,36 @@
             0 100px 80px rgba(0, 0, 0, 0.12);
         border: none;
     }
+
     .wrapper {
         width: 100%;
         display: flex;
         justify-content: space-between;
     }
+
     .sidebar-container {
         padding: 10px;
         width: 15%;
 
     }
+
     .py-5 {
         width: 85%;
     }
+    
 </style>
+<link rel="stylesheet"
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" 
+integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+crossorigin="anonymous">
+<script 
+src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
+integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+crossorigin="anonymous"></script>
+<script 
+src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" 
+integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block belowNav %}
@@ -37,8 +53,8 @@
         <div class="sidebar-body">
             {% for project in personalProjects %}
             <li>
-            <a href= {% url 'view-pp' project.id%}>{{project.project_name}}</a>
-                
+                <a href={% url 'view-pp' project.id%}>{{project.project_name}}</a>
+
             </li>
             {% endfor %}
         </div>
@@ -54,20 +70,45 @@
                         <span style="float: right;">+{{count_todos}}</span>
                     </div>
                     <div class="card-body bg-light mb-3 border">
-                        
+
                         {% for task in to_dos %}
                         <div class="card  bg-white mb-3 card-shadow">
                             <div class="card-body ">
-                                <a href="">
-                                    <h6 class="card-title">{{task.task_name}}</h6>
-                                </a>
-                                <p class="card-text small">{{task.description}}</p>
+
+                                <a href="#ModalCenter{{task.id}}"  class="card-title" data-toggle="modal" data-target="#ModalCenter{{task.id}}" >{{task.task_name}}</a>
+                            
+                                <div class="modal fade" id="ModalCenter{{task.id}}"  tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">
+                                                    {{task.task_name}}
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                               <p>Description: {{task.description}}</p>
+                                               <p>Status: ToDo </p>                                            
+
+                                                <p>Deadline: {{task.deadline_date}}</p>                                            
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href={% url 'update-personalTask' task.id %} class="btn btn-primary">Edit</a>
+                                                <a href="" class="btn btn-secondary">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
                     {% if project_name %}
-                        <a href={% url 'create-pt' project_name.id %} class="btn btn-outline-primary">+Add Task</a>
+                    <a href={% url 'create-pt' project_name.id %} class="btn btn-outline-primary">+Add Task</a>
                     {% endif %}
                 </div>
                 <div class="col-md-4">
