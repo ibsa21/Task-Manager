@@ -21,7 +21,6 @@ class PersonalTaskForm(ModelForm):
         fields = [
             'task_name', 
             'description',
-            'start_date',
             'deadline_date',
             'task_status'
         ]
