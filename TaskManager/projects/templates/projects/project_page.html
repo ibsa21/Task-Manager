@@ -120,10 +120,34 @@ crossorigin="anonymous"></script>
                         {% for task in pending %}
                         <div class="card  bg-white mb-3 card-shadow">
                             <div class="card-body ">
-                                <a href="">
-                                    <h6 class="card-title">{{task.task_name}}</h6>
-                                </a>
-                                <p class="card-text small">{{task.description}}</p>
+                                <a href="#ModalCenter{{task.id}}"  class="card-title" data-toggle="modal" data-target="#ModalCenter{{task.id}}" >{{task.task_name}}</a>
+                            
+                                <div class="modal fade" id="ModalCenter{{task.id}}"  tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">
+                                                    {{task.task_name}}
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                               <p>Description: {{task.description}}</p>
+                                               <p>Status: ToDo </p>                                            
+
+                                                <p>Deadline: {{task.deadline_date}}</p>                                            
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href={% url 'update-personalTask' task.id %} class="btn btn-primary">Edit</a>
+                                                <a href="" class="btn btn-secondary">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
@@ -138,11 +162,34 @@ crossorigin="anonymous"></script>
                         {% for task in completed %}
                         <div class="card  bg-white mb-3 card-shadow">
                             <div class="card-body ">
-                                <a href="">
-                                    <h6 class="card-title">{{task.task_name}}</h6>
-                                </a>
-                                <p class="card-text small">{{task.description}}</p>
-                            </div>
+                                <a href="#ModalCenter{{task.id}}"  class="card-title" data-toggle="modal" data-target="#ModalCenter{{task.id}}" >{{task.task_name}}</a>
+                            
+                                <div class="modal fade" id="ModalCenter{{task.id}}"  tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">
+                                                    {{task.task_name}}
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                               <p>Description: {{task.description}}</p>
+                                               <p>Status: ToDo </p>                                            
+
+                                                <p>Deadline: {{task.deadline_date}}</p>                                            
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href={% url 'update-personalTask' task.id %} class="btn btn-primary">Edit</a>
+                                                <a href="" class="btn btn-secondary">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                         {% endfor %}
                     </div>
