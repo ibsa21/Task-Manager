@@ -29,56 +29,58 @@ def project_view(request):
     
     return render(request, 'projects/project_home.html', {'contrib':list_tasks})
 
-#show all personal projects
-@login_required(login_url='login')
-def default_personalProject(request):
-    All_projects  = PersonalProjects.objects.filter(created_by = request.user.id)
-    return render(request, 'projects/project_page.html', {'projects':All_projects})
-
-
-
-#show personal projects homepage
-@login_required(login_url='login')
-def show_personal_projects(request, pk):
-
-    requested_project_creater = PersonalProjects.objects.get(id=pk)
-    
-    context = {}
-    if request.user == requested_project_creater.created_by:
-
+#get default project for showing
+def get_default_context(pk):
         filter_one = Q(project = pk)
-        filter_two = Q(task_status = 'C')
-        filter_three = Q(task_status = 'TD')
-        filter_four = Q(task_status = 'P')
+        filter_two = Q(is_completed = False)
+        filter_three = Q(is_completed = True)
 
-        completed = PersonalTask.objects.filter(filter_one & filter_two)
-        pending = PersonalTask.objects.filter(filter_one & filter_four)
-        ToDo = PersonalTask.objects.filter(filter_one & filter_three)
+        pending = PersonalTask.objects.filter(filter_one & filter_two)
+        completed = PersonalTask.objects.filter(filter_one & filter_three)
+        # ToDo = PersonalTask.objects.filter(filter_one & filter_three)
         
         context = {
-            'to_dos': ToDo, 
-            'count_todos':ToDo.count(), 
-
             'pending': pending, 
             'count_pending':pending.count(),
 
             'completed':completed,
             'count_completed':completed.count(),
 
-            'project_name':PersonalProjects.objects.get(id=pk),
+            'default':PersonalProjects.objects.get(id=pk),
         }
 
-        if request.method =="POST":
+        return context
 
+#show personal projects homepage
+@login_required(login_url='login')
+def show_personal_projects(request, pk):
+    project = PersonalProjects.objects.get(id=pk)
+    context = {}
+    if request.user == project.created_by:
+        context = get_default_context(pk)
+        if request.method =="POST":
             if 'project_name' in request.POST:
                 create_personalProject(request, request.user)
             elif 'task_name' in request.POST:
-                create_personalTask(request, pk, request.user)
+                create_personalTask(request, pk)
         else:
             pass
     else:
         messages.error(request, 'Requested anauthorized page')
     return render(request, 'projects/project_page.html', context)
+
+#show all personal projects
+@login_required(login_url='login')
+def default_personalProject(request):
+    All_projects  = PersonalProjects.objects.filter(created_by = request.user.id)
+    
+    context = {}
+    if All_projects:
+        context = get_default_context(All_projects[0].id)
+        context['projects'] = All_projects
+
+    return render(request, 'projects/project_page.html', context)
+
 
 #create personal projects view
 @login_required(login_url='login')
@@ -101,7 +103,7 @@ def create_personalProject(request):
 
 #create personal task
 @login_required(login_url='login')
-def create_personalTask(request, pk, user_id):
+def create_personalTask(request, pk):
     form = PersonalTaskForm(request.POST or None, request.FILES or None)
     project = PersonalProjects.objects.get(id=pk)
 
@@ -109,7 +111,8 @@ def create_personalTask(request, pk, user_id):
         
         #associating the current user with database table(PersonalProjects)
         obj = form.save(commit = False)
-        obj.user_name = user_id
+        obj.user_name = request.user
+        obj.is_completed = False
         obj.project = project
         obj.save()
 
@@ -149,7 +152,6 @@ def delete_personalProject(request, pk):
     
     return render(request, 'projects/project_page.html', {'obj':project})
     
-
 #delete personal Task
 @login_required(login_url='login')
 def delete_personalTask(request, pk):
@@ -158,7 +160,18 @@ def delete_personalTask(request, pk):
     if request.method == "POST":
         task.delete()
     return render(request, 'projects/project_page.html')
-    
+
+# mark tasks completed
+@login_required(login_url='login')
+def mark_completed(request, pk):
+    task = PersonalTask.objects.get(id = pk)
+
+    if request.method == "POST":
+        task.is_completed = True
+        task.save()
+
+    return render(request, 'projects/project_page.html')
+
 @login_required(login_url='login')
 def show_task_detail(request, pk):
     print(pk)

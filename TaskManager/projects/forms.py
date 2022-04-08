@@ -22,7 +22,6 @@ class PersonalTaskForm(ModelForm):
             'task_name', 
             'description',
             'deadline_date',
-            'task_status'
         ]
 
 

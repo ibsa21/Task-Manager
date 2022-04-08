@@ -10,6 +10,7 @@ def access_personal_projects(request):
     list_projects  = PersonalProjects.objects.filter(created_by = request.user.id)
     return {'personalProjects': list_projects, 'count':list_projects.count()}
 
+
 def access_completed_task(request):
     filter_one = Q(task_status = 'C')
     filter_two = Q(assigned_to = request.user.id)

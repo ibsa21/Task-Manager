@@ -13,6 +13,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.contrib import messages
+
 # Create your models here.
 
 #Personal Projects Model
@@ -29,17 +30,9 @@ class PersonalProjects(models.Model):
     def __str__(self):
         return self.project_name
 
+
 #personal task models
 class PersonalTask(models.Model):
-    TODO = 'TD'
-    COMPLETED = 'C'
-    INPROGRESS = 'P'
-
-    status_choice = [
-        (TODO, 'Todo Task'),
-        (COMPLETED, 'Completed Task'),
-        (INPROGRESS, 'Inprogress Task'),
-    ]
 
     task_name = models.CharField(max_length=50)
     description = models.TextField()
@@ -48,7 +41,11 @@ class PersonalTask(models.Model):
     deadline_date = models.DateTimeField()
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-    task_status = models.CharField(max_length=2, choices=status_choice, default=TODO)
+    is_completed = models.BooleanField()
+    
+
+
+    # task_status = models.CharField(max_length=2, choices=status_choice, default=TODO)
 
 
     def save(self, *args, **kwargs):
