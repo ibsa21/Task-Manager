@@ -22,12 +22,12 @@ class PersonalProjects(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    count = models.IntegerField(null=False, default=0)
 
     class Meta:
-        ordering = ['-created', '-updated']
+        ordering = ['created', 'updated']
     def __str__(self):
         return self.project_name
-
 
 #personal task models
 class PersonalTask(models.Model):
@@ -45,11 +45,11 @@ class PersonalTask(models.Model):
     description = models.TextField()
     project = models.ForeignKey(PersonalProjects, on_delete=models.CASCADE)
     user_name = models.ForeignKey(User, on_delete=models.CASCADE)
-    # start_date = models.DateTimeField()
     deadline_date = models.DateTimeField()
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     task_status = models.CharField(max_length=2, choices=status_choice, default=TODO)
+
 
     def save(self, *args, **kwargs):
     

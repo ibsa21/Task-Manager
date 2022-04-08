@@ -29,12 +29,23 @@ def project_view(request):
     
     return render(request, 'projects/project_home.html', {'contrib':list_tasks})
 
+#show all personal projects
+@login_required(login_url='login')
+def default_personalProject(request):
+    All_projects  = PersonalProjects.objects.filter(created_by = request.user.id)
+    return render(request, 'projects/project_page.html', {'projects':All_projects})
+
+
+
 #show personal projects homepage
 @login_required(login_url='login')
 def show_personal_projects(request, pk):
+
     requested_project_creater = PersonalProjects.objects.get(id=pk)
+    
     context = {}
     if request.user == requested_project_creater.created_by:
+
         filter_one = Q(project = pk)
         filter_two = Q(task_status = 'C')
         filter_three = Q(task_status = 'TD')
@@ -44,9 +55,6 @@ def show_personal_projects(request, pk):
         pending = PersonalTask.objects.filter(filter_one & filter_four)
         ToDo = PersonalTask.objects.filter(filter_one & filter_three)
         
-        #get the form
-        form = PersonalTaskForm(request.POST or None, request.FILES or None)
-
         context = {
             'to_dos': ToDo, 
             'count_todos':ToDo.count(), 
@@ -59,6 +67,15 @@ def show_personal_projects(request, pk):
 
             'project_name':PersonalProjects.objects.get(id=pk),
         }
+
+        if request.method =="POST":
+
+            if 'project_name' in request.POST:
+                create_personalProject(request, request.user)
+            elif 'task_name' in request.POST:
+                create_personalTask(request, pk, request.user)
+        else:
+            pass
     else:
         messages.error(request, 'Requested anauthorized page')
     return render(request, 'projects/project_page.html', context)
@@ -66,45 +83,46 @@ def show_personal_projects(request, pk):
 #create personal projects view
 @login_required(login_url='login')
 def create_personalProject(request):
+    
+    user_id  = request.user
     form = PersonalProjectForm(request.POST or None, request.FILES or None)
-    if request.method =='POST':
-          
-        if form.is_valid():
-            
-            #associating the current user with database table(PersonalProjects)
-            obj = form.save(commit = False)
-            obj.created_by = request.user
-            obj.save()
+    if form.is_valid():
+        
+        #associating the current user with database table(PersonalProjects)
+        obj = form.save(commit = False)
+        obj.created_by = user_id
+        obj.save()
 
-            form = PersonalProjectForm()
-            messages.success(request, "Successfully created")
-            return  redirect('projects')
+        form = PersonalProjectForm()
+        messages.success(request, "Successfully created")
+        return  redirect('projects')
 
-    context = {'form':form}
-    return render(request, 'projects/pp_form.html', context)
+    return render(request, 'projects/pp_form.html')
 
 #create personal task
 @login_required(login_url='login')
-def create_personalTask(request, pk):
+def create_personalTask(request, pk, user_id):
     form = PersonalTaskForm(request.POST or None, request.FILES or None)
     project = PersonalProjects.objects.get(id=pk)
-    task_list = PersonalTask.objects.filter(project=pk)
-    if request.method =='POST':    
-        if form.is_valid():
-            
-            #associating the current user with database table(PersonalProjects)
-            obj = form.save(commit = False)
-            obj.user_name = request.user
-            obj.project = project
-            obj.save()
 
-            form = PersonalTaskForm()
-            #create another project 
-            messages.success(request, "Successfully created")
-            return  redirect('projects')
+    if form.is_valid():
+        
+        #associating the current user with database table(PersonalProjects)
+        obj = form.save(commit = False)
+        obj.user_name = user_id
+        obj.project = project
+        obj.save()
 
-    context = {'form':form , 'project_list':task_list}
-    return render(request, 'projects/pt_form.html', context)
+        form = PersonalTaskForm()
+
+        #update count of projects((this is how it's done)
+        project.count = PersonalTask.objects.filter(project=project).count()
+        project.save()
+        
+        messages.success(request, "Successfully created")
+        return  redirect('projects')
+
+    return render(request, 'projects/pt_form.html')
 
 #edit tasks pt(personal_task)
 def update_personalTask(request, pk):
@@ -120,7 +138,27 @@ def update_personalTask(request, pk):
     context = {'form':form}
     return render(request, 'projects/pt_form.html', context)
 
+#delete personal Project
+def delete_personalProject(request, pk):
+    project  = PersonalProjects.objects.get(id = pk)
 
+    if request.method == 'POST':
+
+        # project_tasks = PersonalTask.objects.filter(project=project)
+        project.delete()
+    
+    return render(request, 'projects/project_page.html', {'obj':project})
+    
+
+#delete personal Task
+@login_required(login_url='login')
+def delete_personalTask(request, pk):
+    task = PersonalTask.objects.get(id=pk)
+
+    if request.method == "POST":
+        task.delete()
+    return render(request, 'projects/project_page.html')
+    
 @login_required(login_url='login')
 def show_task_detail(request, pk):
     print(pk)
@@ -157,10 +195,6 @@ def start_task(request):
 
 @login_required(login_url='login')
 def update_task(request, pk):
-    pass
-
-@login_required(login_url='login')
-def delete_task(request, pk):
     pass
 
 #show team tasks

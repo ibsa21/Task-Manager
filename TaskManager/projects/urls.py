@@ -13,8 +13,11 @@ urlpatterns = [
     path('projects/start-task/', views.start_task, name = 'start-task'),
 
     #personal projects link
+    path('show-projects/', views.default_personalProject, name = 'show-pp' ),
     path('show-projects/<str:pk>', views.show_personal_projects, name = 'view-pp' ),
     path('personal-project/', views.create_personalProject, name = "create-pp"),
+    path('delete-pp/<str:pk>', views.delete_personalProject, name = "delete-pp"),
+    path('delete-pt/<str:pk>', views.delete_personalTask, name = "delete-pt"),
     path('personal-task/<str:pk>', views.create_personalTask, name = "create-pt"),
     path('update-pt/<str:pk>', views.update_personalTask, name = "update-personalTask"),
 
