@@ -1,0 +1,39 @@
+body, html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: linear-gradient(to bottom, #6e529d 0%, #d97b93 100%);
+}
+
+.card-shadow {
+  box-shadow: 0 100px 80px rgba(0, 0, 0, 0.12);
+  border: none;
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sidebar-container {
+  padding: 20px;
+  width: 25%;
+  margin-top: 30px;
+}
+
+.py-5 {
+  width: 75%;
+}
+
+.project-link {
+  display: flex;
+  margin-top: 5px;
+}
+
+/*# sourceMappingURL=bg.css.map */

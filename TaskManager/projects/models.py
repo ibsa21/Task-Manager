@@ -16,8 +16,8 @@ from django.contrib import messages
 
 # Create your models here.
 
-#Personal Projects Model
-class PersonalProjects(models.Model):
+#Create Base class
+class BaseModel(models.Model):
     project_name = models.CharField(max_length=20)
     project_description = models.TextField(max_length=100)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -26,30 +26,48 @@ class PersonalProjects(models.Model):
     count = models.IntegerField(null=False, default=0)
 
     class Meta:
+        abstract = True
+
+#Personal Projects Model
+class PersonalProjects(BaseModel):
+
+    class Meta:
         ordering = ['created', 'updated']
     def __str__(self):
         return self.project_name
 
+#create group project
+class GroupProject(BaseModel, models.Model):
+    members = models.ManyToManyField(User, blank = True,  related_name='members')
+    deadline_date = models.DateTimeField()
 
-#personal task models
-class PersonalTask(models.Model):
 
+    def get_member_count(self, pk):
+        return GroupProject.objects.filter(id=pk).count()
+
+    def __str__(self):
+        return self.project_name
+
+
+#Task Base Model
+class Task(models.Model):
     task_name = models.CharField(max_length=50)
     description = models.TextField()
-    project = models.ForeignKey(PersonalProjects, on_delete=models.CASCADE)
-    user_name = models.ForeignKey(User, on_delete=models.CASCADE)
     deadline_date = models.DateTimeField()
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     is_completed = models.BooleanField()
-    
 
+    class Meta:
+        abstract = True
 
-    # task_status = models.CharField(max_length=2, choices=status_choice, default=TODO)
-
+#personal task models
+class PersonalTask(Task, models.Model):
+    project = models.ForeignKey(PersonalProjects, on_delete=models.CASCADE)
+    user_name = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
-    
+
         if self.deadline_date < timezone.now():
             raise ValidationError (f'Deadline date cannot be before {{timezone.now()}}' )
         super(PersonalTask, self).save(*args, **kwargs)
@@ -57,36 +75,17 @@ class PersonalTask(models.Model):
     def __str__(self):
         return self.task_name
 
-# group_task model
-class Task(models.Model):
+#Group Task
+class GroupTask(Task, models.Model):
+    project = models.ForeignKey(GroupProject, on_delete=models.CASCADE)
+    assignedTo = models.ManyToManyField(User, related_name="collaborators")
+
+    def save(self, *args, **kwargs):
     
-    TODO = 'TD'
-    COMPLETED = 'C'
-    INPROGRESS = 'P'
-
-    status_choice = [
-        (TODO, 'Todo Task'),
-        (COMPLETED, 'Completed Task'),
-        (INPROGRESS, 'Inprogress Task'),
-    ]
-
-    task_name = models.CharField(max_length=50)
-    description = models.TextField()
-    assigned_to = models.ManyToManyField(User, through="TaskUser")
-    start_date = models.DateTimeField()
-    deadline_date = models.DateTimeField()
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
-    task_status = models.CharField(max_length=2, choices=status_choice, default=TODO)
+        if self.deadline_date < timezone.now():
+            raise ValidationError (f'Deadline date cannot be before {{timezone.now()}}' )
+        super(GroupTask, self).save(*args, **kwargs)
     
     def __str__(self):
         return self.task_name
-    
-
-class TaskUser(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    task_id = models.ForeignKey(Task, on_delete=models.CASCADE )
-
-    class Meta:
-        unique_together = [['user_id', 'task_id']]
 

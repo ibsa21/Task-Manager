@@ -9,5 +9,237 @@
 <body>
     {% block content %}
     {% endblock %}
+
+    <div class="wrapper">
+
+        <!-- Start of Sidebar -->
+    
+        <div class="sidebar-container ">
+            <div class="sidebar-top">
+                {% block form_block %}
+                {% endblock %}
+            </div>
+    
+            <div class="card border-info mb-3 card-bg-color" style="max-width: 18rem;">
+                <div class="card-header">Browse Projects</div>
+                <ul class="card-body text-info">
+                    {% block list_project %}
+                    {% endblock %}
+                </ul>
+              </div>
+        </div>
+        <!-- End of sidebar -->
+    
+        <!-- Start of main section -->
+        <div class="py-5">
+            <div class="container">
+                <div class="row hidden-md-up">
+    
+                    <!-- Start of Todo column -->
+                    <div class="col-md-4">
+    
+                        <!-- Start of Add Task Modal (show only if atleast one project exists) -->
+                        {% if default %}
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" style="display:inline; margin-right: 20px;">{{default}}</h5>
+                                <a href="#deleteProject{{project.id}}" data-toggle="modal"
+                                    data-target="#deleteProject{{project.id}}"><i class="fa-solid fa-trash"></i>
+                                </a>
+                                <!-- Delete button Modal -->
+                                <div class="modal fade" id="deleteProject{{project.id}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+    
+                                        <form action={% url 'delete-pp' default.id %} method="POST">
+                                            {% csrf_token %}
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    Confirm
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure want to delete "{{default.project_name}}"?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <input type="submit" class="btn btn-warning" value="Delete">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <h6 class="card-subtitle mb-2 text-muted">{{default.count}} Tasks </h6>
+                                <p class="card-text">{{default.project_description}}</p>
+    
+                                <a href="#createTask{{task.id}}" data-toggle="modal" data-target="#createTask{{task.id}}">
+                                    +Add Task
+                                </a>
+                                <div class="modal fade" id="createTask{{task.id}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <form action={% url 'create-pt' default.id %} method="POST">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">
+                                                        {{task.task_name}}
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label for="id_task_name">Task name:</label>
+                                                        <input class="form-control" id="id_task_name" maxlength="50"
+                                                            name="task_name" required="" type="text" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="id_description">Description:</label>
+                                                        <textarea cols="40" id="id_description" name="description"
+                                                            required="" rows="10">
+                                      </textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="id_deadline_date">Deadline date:</label>
+                                                        <input class="form-control" id="id_deadline_date"
+                                                            name="deadline_date" required="" type="text" />
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <input class="btn btn-primary" type="submit" value="submit" />
+    
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="message-wrapper">
+                            <p>No project</p>
+                        </div>
+                        {% endif %}
+                        <!-- End of Add Tsk Modal -->
+                    </div>
+                    <!-- End of Todo Column -->
+    
+                    <!-- Start of Pending Column -->
+                    <div class="col-md-4">
+    
+                        <div class="card-header text-center text-white  bg-secondary mb-3">
+                            Pending
+                            <span style="float: right;">+{{count_pending}}</span>
+                        </div>
+                        <div class="card-body bg-light mb-3 border">
+                            <div class="card  bg-white mb-3 card-shadow">
+                                <div class="card-body ">
+                                    {% for task in pending %}
+                                    <div class="list-items">
+                                        <a href="#ModalCenter{{task.id}}" class="card-title" data-toggle="modal"
+                                            data-target="#ModalCenter{{task.id}}">{{task.task_name}}</a>
+                                        <form action={% url 'mark-completed' task.id %} method="post" style="float: right;">
+                                            {% csrf_token %}
+                                            <div>
+                                                <input type="checkbox" onclick="this.form.submit()">
+                                            </div>
+                                        </form>
+                                    </div>
+    
+                                    <div class="modal fade" id="ModalCenter{{task.id}}" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">
+                                                        {{task.task_name}}
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Description: {{task.description}}</p>
+                                                    <p>Status: ToDo </p>
+    
+                                                    <p>Deadline: {{task.deadline_date}}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a href={% url 'update-personalTask' task.id %}
+                                                        class="btn btn-primary">Edit</a>
+                                                    <form action={% url 'delete-pt' task.id %} method="post">
+                                                        {% csrf_token %}
+                                                        <input type="submit" value="Delete" class="btn btn-secondary">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of Pending Column -->
+    
+                    <!-- Start of Pending Column -->
+                    <div class="col-md-4">
+    
+                        <div class="card-header text-center text-white  bg-success mb-3">
+                            Completed
+                            <span style="float: right;">+{{count_completed}}</span>
+                        </div>
+                        <div class="card-body bg-light mb-3 border">
+                            <div class="card  bg-white mb-3 card-shadow">
+                                <div class="card-body ">
+                                    {% for task in completed %}
+    
+                                    <div class="list-items">
+                                        <a href="#ModalCenter{{task.id}}" class="card-title" data-toggle="modal"
+                                            data-target="#ModalCenter{{task.id}}">{{task.task_name}}</a>
+                                    </div>
+    
+                                    <div class="modal fade" id="ModalCenter{{task.id}}" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">
+                                                        {{task.task_name}}
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Description: {{task.description}}</p>
+                                                    <p>Completed: {{task.is_completed}} </p>
+    
+                                                    <p>Deadline: {{task.deadline_date}}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a href={% url 'update-personalTask' task.id %}
+                                                        class="btn btn-primary">Edit</a>
+                                                    <form action={% url 'delete-pt' task.id %} method="post">
+                                                        {% csrf_token %}
+                                                        <input type="submit" value="Delete" class="btn btn-secondary">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of Pending Column -->
+    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of main  section -->
 </body>
 </html>

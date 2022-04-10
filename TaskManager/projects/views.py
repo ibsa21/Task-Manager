@@ -8,37 +8,35 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Task, TaskUser, PersonalTask, PersonalProjects
-from Team.models import Team
-from .forms import TaskForm, PersonalProjectForm, PersonalTaskForm
+from .models import GroupProject, PersonalTask, PersonalProjects
+from .forms import GroupProjectForm, TaskForm, PersonalProjectForm, PersonalTaskForm
 
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
     user  = User.objects.get(username = request.user)
-    user_team = Team.objects.filter(members = user.id)
+    user_team = GroupProject.objects.filter(members = user.id)
     return render(request, 'dashboard/index.html', {'teams':user_team})
     
 @login_required(login_url='login')
 def project_view(request):
-    task_name = Task.objects.all().only('task_name')
+    task_name = PersonalTask.objects.all().only('task_name')
 
     list_tasks = {}
     for task in task_name:
-        list_tasks[f'{task}'] = TaskUser.objects.filter(task_id=task.id)
+        list_tasks[f'{task}'] = PersonalTask.objects.filter(id=task.id)
     
     return render(request, 'projects/project_home.html', {'contrib':list_tasks})
 
 #get default project for showing
-def get_default_context(pk):
+def get_default_context(pk, model_object, default_ctx):
 
         filter_one = Q(project = pk)
         filter_two = Q(is_completed = False)
         filter_three = Q(is_completed = True)
 
-        pending = PersonalTask.objects.filter(filter_one & filter_two)
-        completed = PersonalTask.objects.filter(filter_one & filter_three)
-        # ToDo = PersonalTask.objects.filter(filter_one & filter_three)
+        pending = model_object.objects.filter(filter_one & filter_two)
+        completed = model_object.objects.filter(filter_one & filter_three)
         
         context = {
             'pending': pending, 
@@ -47,7 +45,7 @@ def get_default_context(pk):
             'completed':completed,
             'count_completed':completed.count(),
 
-            'default':PersonalProjects.objects.get(id=pk),
+            'default':default_ctx.objects.get(id=pk),
         }
 
         return context
@@ -58,7 +56,7 @@ def show_personal_projects(request, pk):
     project = PersonalProjects.objects.get(id=pk)
     context = {}
     if request.user == project.created_by:
-        context = get_default_context(pk)
+        context = get_default_context(pk, PersonalTask,  PersonalProjects)
         if request.method =="POST":
             if 'project_name' in request.POST:
                 create_personalProject(request, request.user)
@@ -77,7 +75,7 @@ def default_personalProject(request):
     
     context = {}
     if All_projects:
-        context = get_default_context(All_projects[0].id)
+        context = get_default_context(All_projects[0].id, PersonalTask, PersonalProjects)
         context['projects'] = All_projects
 
     return render(request, 'projects/project_page.html', context)
@@ -102,9 +100,28 @@ def create_personalProject(request):
 
     return render(request, 'projects/pp_form.html')
 
+#create project
+
+def create_group_project(request):
+    user_id  = request.user
+    form = GroupProjectForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        
+        #associating the current user with database table(PersonalProjects)
+        obj = form.save(commit = False)
+        obj.created_by = user_id
+        obj.save()
+
+        form = GroupProjectForm()
+        messages.success(request, "Successfully created")
+        return  redirect('projects')
+
+    return render(request, 'dashboard/index.html')
+
 #create personal task
 @login_required(login_url='login')
 def create_personalTask(request, pk):
+
     form = PersonalTaskForm(request.POST or None, request.FILES or None)
     project = PersonalProjects.objects.get(id=pk)
 
@@ -174,7 +191,7 @@ def mark_completed(request, pk):
 
         # return redirect('show-pp')
 
-    return render(request, 'projects/project_page.html', get_default_context(project.id))
+    return render(request, 'projects/project_page.html', get_default_context(project.id, PersonalTask,  PersonalProjects))
 
 
 #search project functionality 
@@ -188,7 +205,7 @@ def search_projects(request):
         project = PersonalProjects.objects.get(Q(project_name__icontains = query))
 
         if project.created_by == request.user:
-            context = get_default_context(project.id)
+            context = get_default_context(project.id, PersonalProjects,  PersonalProjects)
 
         return render(request, 'projects/project_page.html', context)
 
@@ -196,13 +213,10 @@ def search_projects(request):
         return render(request, 'projects/project_page.html', {})
     
 
-
-
-
 @login_required(login_url='login')
 def show_task_detail(request, pk):
     print(pk)
-    task_name = Task.objects.get(task_name=pk)
+    task_name = PersonalTask.objects.get(task_name=pk)
     return render(request, 'projects/Task_info.html', {'task':task_name})
 
 def create_task(request):
@@ -223,7 +237,7 @@ def create_task(request):
 def start_task(request):
 
     print(request.method == "POST")
-    task_list = Task.objects.all()
+    task_list = PersonalTask.objects.all()
 
     if request.method == "POST":
         id_list = request.POST.getlist('boxes')
@@ -240,8 +254,8 @@ def update_task(request, pk):
 #show team tasks
 @login_required(login_url='login')
 def team_projects(request, pk):
-    team_name = Team.objects.get(id=pk)
-    team_tasks = Team.objects.get(id = pk)
+    team_name = GroupProject.objects.get(id=pk)
+    team_tasks = GroupProject.objects.get(id = pk)
 
     return render(
                     request, 'projects/team_tasks.html', 
