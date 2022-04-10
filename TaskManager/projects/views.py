@@ -31,6 +31,7 @@ def project_view(request):
 
 #get default project for showing
 def get_default_context(pk):
+
         filter_one = Q(project = pk)
         filter_two = Q(is_completed = False)
         filter_three = Q(is_completed = True)
@@ -165,12 +166,38 @@ def delete_personalTask(request, pk):
 @login_required(login_url='login')
 def mark_completed(request, pk):
     task = PersonalTask.objects.get(id = pk)
+    project = PersonalProjects.objects.get(id = task.project.id)
 
     if request.method == "POST":
         task.is_completed = True
         task.save()
 
-    return render(request, 'projects/project_page.html')
+        # return redirect('show-pp')
+
+    return render(request, 'projects/project_page.html', get_default_context(project.id))
+
+
+#search project functionality 
+@login_required(login_url='login')
+
+def search_projects(request):
+    query = request.GET.get('query') if request.GET.get('query') is not None else ''
+
+    try:
+        context = {}
+        project = PersonalProjects.objects.get(Q(project_name__icontains = query))
+
+        if project.created_by == request.user:
+            context = get_default_context(project.id)
+
+        return render(request, 'projects/project_page.html', context)
+
+    except Exception as e:
+        return render(request, 'projects/project_page.html', {})
+    
+
+
+
 
 @login_required(login_url='login')
 def show_task_detail(request, pk):
