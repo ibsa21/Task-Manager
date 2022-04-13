@@ -1,0 +1,25 @@
+<form action="" method="post">
+    {% csrf_token %}
+    <p>Are you sure want to delte "{{obj.project_name}}"?</p>
+    <input type="submit" value="Confirm">
+</form>
+<a href={% url 'delete-pp' project.id %}><i class='bx bx-message-square-x'></i></a>
+
+<a href="#deleteProject{{project.id}}" class="btn btn-outline-primary" data-toggle="modal"
+data-target="#deleteProject{{project.id}}"><i class='bx bx-message-square-x'></i></a>
+
+<div class="modal fade" id="deleteProject{{project.id}}" tabindex="-1" role="dialog"
+aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <form action="" method="post">
+            {% csrf_token %}
+            <p>Are you sure want to delte "{{obj.project_name}}"?</p>
+            <input type="submit" value="Confirm">
+        </form>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-warning" value="Delete">
+    </div>
+</div>
+</div>

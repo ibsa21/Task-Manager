@@ -1,0 +1,25 @@
+<form action="" method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="id_task_name">Task name:</label>
+        <input class="form-control" id="id_task_name" maxlength="50" name="task_name" required="" type="text" />
+    </div>
+    <div class="form-group">
+        <label for="id_description">Description:</label>
+        <textarea cols="40" id="id_description" name="description" required="" rows="10">
+</textarea>
+    </div>
+    <div class="form-group">
+        <label for="id_deadline_date">Deadline date:</label>
+        <input class="form-control" id="id_deadline_date" name="deadline_date" required="" type="text" />
+    </div>
+    <div class="form-group">
+        <label for="id_task_status">Task status:</label>
+        <select id="id_task_status" name="task_status">
+            <option selected="" value="TD">Todo Task</option>
+            <option value="C">Completed Task</option>
+            <option value="P">Inprogress Task</option>
+        </select>
+    </div>
+    <input class="form-control" type="submit" value="submit" />
+</form>
