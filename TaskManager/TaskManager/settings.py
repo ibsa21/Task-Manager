@@ -6,7 +6,7 @@ SECRET_KEY = 'django-insecure-3u_1h!9b@hs)33sdnlt@q9h91qztpbnceeh-4wbb&etj#zbwen
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '0.0.0.0',
+    '*'
 ]
 
 
@@ -51,6 +51,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'projects.context_processors.access_personal_projects',
+                'projects.context_processors.access_all_user',
             ],
         },
     },

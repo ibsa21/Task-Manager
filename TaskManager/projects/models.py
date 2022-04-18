@@ -1,19 +1,13 @@
 from email import message
 from django.utils import timezone
-from argparse import BooleanOptionalAction
-from asyncio.windows_events import NULL
 import datetime
 from email.policy import default
 from enum import unique
 from pyexpat import model
-from tkinter import CASCADE
-from urllib import request
 from django.db import models
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from django.contrib import messages
-
+from django.contrib.auth.models import Group
 # Create your models here.
 
 #Create Base class
@@ -38,7 +32,7 @@ class PersonalProjects(BaseModel):
 
 #create group project
 class GroupProject(BaseModel, models.Model):
-    members = models.ManyToManyField(User, blank = True,  related_name='members')
+    members = models.ManyToManyField(User, blank = True,  through='GroupMember')
     deadline_date = models.DateTimeField()
 
 
@@ -48,6 +42,9 @@ class GroupProject(BaseModel, models.Model):
     def __str__(self):
         return self.project_name
 
+class GroupMembers(models.Model):
+    project_id = models.ForeignKey(GroupProject, on_delete=models.CASCADE)
+    member_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
 
 #Task Base Model
 class Task(models.Model):
@@ -78,7 +75,7 @@ class PersonalTask(Task, models.Model):
 #Group Task
 class GroupTask(Task, models.Model):
     project = models.ForeignKey(GroupProject, on_delete=models.CASCADE)
-    assignedTo = models.ManyToManyField(User, related_name="collaborators")
+    assignedTo = models.ManyToManyField(User, through="TaskAssignedTo")
 
     def save(self, *args, **kwargs):
     
@@ -89,3 +86,6 @@ class GroupTask(Task, models.Model):
     def __str__(self):
         return self.task_name
 
+class TaskAssignedTo(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    task_id = models.ForeignKey(GroupTask, on_delete=models.CASCADE)
