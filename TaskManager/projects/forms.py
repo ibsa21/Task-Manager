@@ -1,7 +1,7 @@
 from dataclasses import field, fields
 from pyexpat import model
 from django.forms import ModelForm
-from .models import GroupProject, PersonalTask, Task, PersonalProjects
+from .models import GroupProject, GroupTask, PersonalTask, Task, PersonalProjects
 
 #personal Project Form
 class PersonalProjectForm(ModelForm):
@@ -37,6 +37,18 @@ class PersonalTaskForm(ModelForm):
             'deadline_date',
         ]
 
+#Group task form
+class GroupTaskForm(ModelForm):
+    class Meta:
+
+        model = GroupTask
+        fields = [
+
+            'task_name', 
+            'description',
+            'deadline_date',
+            'assignedTo',
+        ]
 class TaskForm(ModelForm):
     class Meta:
         model = Task

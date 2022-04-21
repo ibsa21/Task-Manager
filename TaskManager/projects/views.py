@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import GroupProject, PersonalTask, PersonalProjects
-from .forms import GroupProjectForm, TaskForm, PersonalProjectForm, PersonalTaskForm
+from .models import GroupProject, GroupTask, PersonalTask, PersonalProjects
+from .forms import GroupProjectForm, GroupTaskForm, TaskForm, PersonalProjectForm, PersonalTaskForm
 
 # Create your views here.
 @login_required(login_url='login')
@@ -44,7 +44,6 @@ def get_default_context(pk, model_object, default_ctx):
 
             'completed':completed,
             'count_completed':completed.count(),
-
             'default':default_ctx.objects.get(id=pk),
         }
 
@@ -144,6 +143,36 @@ def create_personalTask(request, pk):
         return  redirect('projects')
 
     return render(request, 'projects/pt_form.html')
+
+@login_required(login_url='login')
+def create_group_task(request, pk):
+    requested_project = GroupProject.objects.get(id  = pk)
+
+    if requested_project.created_by == request.user:
+        form  = GroupTaskForm(request.POST or None, request.FILES or None)
+        # form  = None
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.project = requested_project
+            obj.is_completed = False
+            obj.save()
+
+            colloborators = list(map(int, request.POST.getlist('assignedTo')))
+            print(colloborators)
+            obj = GroupTask.objects.get(id = obj.id)
+            obj.assignedTo.set(id for id in colloborators)
+            obj.save()
+                            
+            form = GroupTaskForm()
+            requested_project.count = GroupTask.objects.filter(project = requested_project).count()
+            requested_project.save()
+            
+        messages.add_message(request, messages.INFO, f"{obj} task is added")
+
+    else:
+        print("hello")
+        messages.add_message(request, messages.INFO, "YOu are not authorized to create a task")
+    return render(request, 'dashboard/index.html', get_default_context(pk, GroupTask, GroupProject))
 
 #edit tasks pt(personal_task)
 def update_personalTask(request, pk):

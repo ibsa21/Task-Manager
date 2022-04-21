@@ -32,7 +32,7 @@ class PersonalProjects(BaseModel):
 
 #create group project
 class GroupProject(BaseModel, models.Model):
-    members = models.ManyToManyField(User, blank = True,  through='GroupMember')
+    members = models.ManyToManyField(User, blank = True,  through='GroupMembers', related_name="members")
     deadline_date = models.DateTimeField()
 
 
@@ -43,8 +43,11 @@ class GroupProject(BaseModel, models.Model):
         return self.project_name
 
 class GroupMembers(models.Model):
-    project_id = models.ForeignKey(GroupProject, on_delete=models.CASCADE)
-    member_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    project= models.ForeignKey(GroupProject, on_delete=models.CASCADE)
+    member = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return str(self.member)
 
 #Task Base Model
 class Task(models.Model):
@@ -75,7 +78,7 @@ class PersonalTask(Task, models.Model):
 #Group Task
 class GroupTask(Task, models.Model):
     project = models.ForeignKey(GroupProject, on_delete=models.CASCADE)
-    assignedTo = models.ManyToManyField(User, through="TaskAssignedTo")
+    assignedTo = models.ManyToManyField(GroupMembers, through="TaskAssignedTo")
 
     def save(self, *args, **kwargs):
     
@@ -87,5 +90,5 @@ class GroupTask(Task, models.Model):
         return self.task_name
 
 class TaskAssignedTo(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    task_id = models.ForeignKey(GroupTask, on_delete=models.CASCADE)
+    user = models.ForeignKey(GroupMembers, on_delete=models.DO_NOTHING)
+    task= models.ForeignKey(GroupTask, on_delete=models.CASCADE)

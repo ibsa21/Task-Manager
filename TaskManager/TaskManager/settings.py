@@ -52,6 +52,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'projects.context_processors.access_personal_projects',
                 'projects.context_processors.access_all_user',
+                'dashboard.context_processors.get_default_group_page',
             ],
         },
     },
