@@ -3,10 +3,6 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'CSS/team_info.css' %}">
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <style>
     * {
         box-sizing: border-box;
@@ -275,52 +271,14 @@
                                 data-target="#createTask{{default.id}}" style="float: right;">
                                 +Add Task
                             </a>
+
                             <div class="modal fade" id="createTask{{default.id}}" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <form action={% url 'create-gt' default.id %} method="POST">
                                             {% csrf_token %}
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLongTitle">
-                                                    {{task.task_name}}
-                                                </h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="form-group">
-                                                    <label for="id_task_name">Task name:</label>
-                                                    <input class="form-control" id="id_task_name" maxlength="50"
-                                                        name="task_name" required="" type="text" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="id_description">Description:</label>
-                                                    <textarea class="form-control" cols="40" id="id_description" name="description"
-                                                        required="" rows="3">
-                                  </textarea>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="id_deadline_date">Deadline date:</label>
-                                                    <input class="form-control" id="id_deadline_date"
-                                                        name="deadline_date" required="" type="text" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="id_assignedTo">AssignedTo:</label>
-                                                    <select id="id_assignedTo" multiple="" name="assignedTo"
-                                                        required="">
-                                                        {% for member in default.members.all%}
-                                                        <option value="{{member.id}}">{{member}}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <input class="btn btn-primary" type="submit" value="submit" />
-
-                                            </div>
+                                            {% include 'task_create_form.html' %}
                                         </form>
                                     </div>
                                 </div>
@@ -354,7 +312,7 @@
                     <div class="card card-bg-color">
                         <div class="card-header text-center text-white  bg-secondary mb-3">
                             Pending
-                            <span style="float: right;">+{{count_pending}}</span>
+                            <span style="float: right;">+{{pending.count}}</span>
                         </div>
                         <div class="card-body text-info">
                             {% for task in pending %}
@@ -362,7 +320,7 @@
                                 <a href="#ModalCenter{{task.id}}" class="card-title" data-toggle="modal"
                                     data-target="#ModalCenter{{task.id}}">{{task.task_name}}</a>
 
-                                <form action={% url 'mark-completed' task.id %} method="post" style="float: right;">
+                                <form action={% url 'mark-completed-gt' task.id %} method="post" style="float: right;">
                                     {% csrf_token %}
                                     <div>
                                         <input type="checkbox" onclick="this.form.submit()">
@@ -376,6 +334,26 @@
                                     {% endfor %}
                                 </ul>
                                 <!-- end of members list -->
+
+                                <div style="float: right; margin-top: -30px;">
+
+                                    <a href="#updateTask" data-toggle="modal" data-target="#updateTask"
+                                        style="float: right;" class="openBtn" name={{task.id}}>
+                                        <i class="fa-solid fa-marker"></i>
+                                    </a>
+
+                                    <div class="modal fade" id="updateTask" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <form action={% url 'update-grouptask' task.id %} method="POST">
+                                                    {% csrf_token %}
+                                                    {% include 'task_create_form.html' %}
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="modal fade" id="ModalCenter{{task.id}}" tabindex="-1" role="dialog"
@@ -392,16 +370,22 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>Description: {{task.description}}</p>
-                                            <p>Status: ToDo </p>
+                                            <p>Status: in progress </p>
 
                                             <p>Deadline: {{task.deadline_date}}</p>
+                                            <p>AssignedTo:</p>
+                                            <ul>
+                                                {% for member in task.assignedTo.all%}
+                                                <li>{{member}}</li>
+                                                {% endfor %}
+                                            </ul>
                                         </div>
                                         <div class="modal-footer">
-                                            <a href={% url 'update-personalTask' task.id %}
-                                                class="btn btn-primary">Edit</a>
-                                            <form action={% url 'delete-pt' task.id %} method="post">
+                                            <form action={% url 'delete-grouptask' task.id %} method="post">
                                                 {% csrf_token %}
                                                 <input type="submit" value="Delete" class="btn btn-secondary">
+                                            </form>
+
                                         </div>
                                     </div>
                                 </div>
@@ -451,9 +435,10 @@
                                             <div class="modal-footer">
                                                 <a href={% url 'update-personalTask' task.id %}
                                                     class="btn btn-primary">Edit</a>
-                                                <form action={% url 'delete-pt' task.id %} method="post">
+                                                <form action={% url 'delete-grouptask' task.id %} method="post">
                                                     {% csrf_token %}
                                                     <input type="submit" value="Delete" class="btn btn-secondary">
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
