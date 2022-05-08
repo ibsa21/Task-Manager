@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from requests import RequestException
 from .models import GroupProject, GroupTask, PersonalTask, PersonalProjects
 from .forms import GroupProjectForm, GroupTaskForm, TaskForm, PersonalProjectForm, PersonalTaskForm
 
@@ -129,9 +128,9 @@ def show_personal_projects(request, pk):
 def default_personalProject(request):
     All_projects  = PersonalProjects.objects.filter(created_by = request.user.id)
 
-    personal_project = DefaultProject(PersonalTask, PersonalProjects, All_projects[0].id,request.user.id)
     context = {}
     if All_projects:
+        personal_project = DefaultProject(PersonalTask, PersonalProjects, All_projects[0].id,request.user.id)
         context = personal_project.get_context('personal')
 
     return render(request, 'projects/project_page.html', context)
