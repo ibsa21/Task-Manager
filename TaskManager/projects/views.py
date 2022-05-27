@@ -11,15 +11,17 @@ from django.db.models import Q
 from .models import GroupProject, GroupTask, PersonalTask, PersonalProjects
 from .forms import GroupProjectForm, GroupTaskForm, TaskForm, PersonalProjectForm, PersonalTaskForm
 
-# Create your views here.
 @login_required(login_url='login')
 def home(request):
+    """Returns a homepage with user group project on it"""
+
     user  = User.objects.get(username = request.user)
     user_team = GroupProject.objects.filter(members = user.id)
     return render(request, 'dashboard/index.html', {'teams':user_team})
     
 @login_required(login_url='login')
 def project_view(request):
+    """Returns a list of user tasks"""
     task_name = PersonalTask.objects.all().only('task_name')
 
     list_tasks = {}
@@ -28,8 +30,6 @@ def project_view(request):
     
     return render(request, 'projects/project_home.html', {'contrib':list_tasks})
 
-#generic function/ get_default_context
-#generic function/ get defualt project
 class DefaultProject:
 
     def __init__(self, task_model, project_model, pk, user_id) -> None:
@@ -120,7 +120,6 @@ def show_personal_projects(request, pk):
             pass
     else:
         messages.error(request, 'Requested anauthorized page')
-    print(context)
     return render(request, 'projects/project_page.html', context)
 
 #show all personal projects
@@ -136,14 +135,12 @@ def default_personalProject(request):
     return render(request, 'projects/project_page.html', context)
 
 
-#create personal projects view
 @login_required(login_url='login')
 def create_personalProject(request):
-    
+    """Used to create a Personal project and store it in a database"""
     user_id  = request.user
     form = PersonalProjectForm(request.POST or None, request.FILES or None)
     if form.is_valid():
-        
         #associating the current user with database table(PersonalProjects)
         obj = form.save(commit = False)
         obj.created_by = user_id
@@ -152,61 +149,60 @@ def create_personalProject(request):
         form = PersonalProjectForm()
         messages.success(request, "Successfully created")
         return  redirect('projects')
-
+    else:
+        # do something here
+        pass
     return render(request, 'projects/pp_form.html')
 
-#create project
-
 def create_group_project(request):
+    """Used to create a group project and store it in database"""
     user_id  = request.user
     form = GroupProjectForm(request.POST or None, request.FILES or None)
     if form.is_valid():
-        
         #associating the current user with database table(PersonalProjects)
         obj = form.save(commit = False)
         obj.created_by = user_id
         obj.save()
-
         form = GroupProjectForm()
         messages.success(request, "Successfully created")
         return  redirect('projects')
-
+    else:
+        # do something here
+        pass
     return render(request, 'dashboard/index.html')
 
-#create personal task
 @login_required(login_url='login')
 def create_personalTask(request, pk):
-
+    """Store a personal task and associate it with it's respective project"""
     form = PersonalTaskForm(request.POST or None, request.FILES or None)
     project = PersonalProjects.objects.get(id=pk)
 
     if form.is_valid():
-        
         #associating the current user with database table(PersonalProjects)
         obj = form.save(commit = False)
         obj.user_name = request.user
         obj.is_completed = False
         obj.project = project
         obj.save()
-
         form = PersonalTaskForm()
 
-        #update count of projects((this is how it's done)
+        # update tasks under specific project
         project.count = PersonalTask.objects.filter(project=project).count()
         project.save()
-        
         messages.success(request, "Successfully created")
         return  redirect('projects')
-
+    else:
+        #do something here
+        pass
     return render(request, 'projects/pt_form.html')
 
 @login_required(login_url='login')
 def create_group_task(request, pk):
+    """Store a group task and associate it with it's respective project"""
     requested_project = GroupProject.objects.get(id  = pk)
 
     if requested_project.created_by == request.user:
         form  = GroupTaskForm(request.POST or None, request.FILES or None)
-        # form  = None
         if form.is_valid():
             obj = form.save(commit=False)
             obj.project = requested_project
@@ -221,11 +217,12 @@ def create_group_task(request, pk):
             form = GroupTaskForm()
             requested_project.count = GroupTask.objects.filter(project = requested_project).count()
             requested_project.save()
-            
-        messages.add_message(request, messages.INFO, f"{obj} task is added")
 
+            messages.add_message(request, messages.INFO, f"{obj} task is added")
+        else:
+            #do something here
+            pass
     else:
-        print("hello")
         messages.add_message(request, messages.INFO, "YOu are not authorized to create a task")
     return render(request, 'dashboard/index.html', get_default_context(pk, GroupTask, GroupProject))
 

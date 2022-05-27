@@ -35,7 +35,6 @@ class GroupProject(BaseModel, models.Model):
     members = models.ManyToManyField(User, blank = True,  through='GroupMembers', related_name="members")
     deadline_date = models.DateTimeField()
 
-
     def get_member_count(self, pk):
         return GroupProject.objects.filter(id=pk).count()
 

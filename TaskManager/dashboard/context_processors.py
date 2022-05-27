@@ -8,10 +8,10 @@ from projects.views import get_default_context
 
 #get default page for group template
 def get_default_group_page(request):
-    group_project = GroupProject.objects.filter(created_by=request.user)
-    context = {}
+    # group_project = GroupProject.objects.filter(created_by=request.user)
+    # context = {}
 
-    if group_project:
-        context = get_default_context(group_project[0].id, GroupTask, GroupProject)
-        context['teams'] = group_project
-    return context
+    # if group_project:
+    #     context = get_default_context(group_project[0].id, GroupTask, GroupProject)
+    #     context['teams'] = group_project
+    return {}
