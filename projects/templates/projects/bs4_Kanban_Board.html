@@ -1,0 +1,435 @@
+{% extends 'nav_template.html' %} {% load static %} {% block extra_head %}
+<meta charset="utf-8" />
+<title>bs4 Kanban Board - Bootdey.com</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %} {% block belowNav %}
+
+<main class="content">
+  <div class="container p-0">
+    <h1 class="h3 mb-3">Kanban Board</h1>
+
+    <div class="row">
+                        <!-- Start of Todo column -->
+        <div class="col-md-4">
+
+            <!-- Start of Add Task Modal (show only if atleast one project exists) -->
+            {% if personal_default %}
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title" style="display:inline; margin-right: 20px;">{{personal_default}}</h5>
+                    <a href="#deleteProject{{project.id}}" data-toggle="modal"
+                        data-target="#deleteProject{{project.id}}"><i class="fa-solid fa-trash"></i>
+                    </a>
+                    <!-- Delete button Modal -->
+                    <div class="modal fade" id="deleteProject{{project.id}}" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+
+                            <form action={% url 'delete-pp' personal_default.id %} method="POST">
+                                {% csrf_token %}
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        Confirm
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure want to delete "{{personal_default.project_name}}"?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input type="submit" class="btn btn-warning" value="Delete">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <h6 class="card-subtitle mb-2 text-muted">{{personal_default.count}} Tasks </h6>
+                    <p class="card-text">{{personal_default.project_description}}</p>
+
+                    <a href="#createTask{{task.id}}" data-toggle="modal" data-target="#createTask{{task.id}}">
+                        +Add Task
+                    </a>
+                    <div class="modal fade" id="createTask{{task.id}}" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <form action={% url 'create-pt' personal_default.id %} method="POST">
+                                    {% csrf_token %}
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">
+                                            {{task.task_name}}
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="id_task_name">Task name:</label>
+                                            <input class="form-control" id="id_task_name" maxlength="50"
+                                                name="task_name" required="" type="text" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_description">Description:</label>
+                                            <textarea cols="40" id="id_description" name="description"
+                                                required="" rows="10">
+                            </textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_deadline_date">Deadline date:</label>
+                                            <input class="form-control" id="id_deadline_date"
+                                                name="deadline_date" required="" type="text" />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input class="btn btn-primary" type="submit" value="submit" />
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="message-wrapper">
+                <p>No project</p>
+            </div>
+            {% endif %}
+            <!-- End of Add Tsk Modal -->
+        </div>
+        <!-- End of Todo Column -->
+
+      <div class="col-12 col-lg-6 col-xl-3">
+        <div class="card card-border-primary">
+          <div class="card-header">
+            <div class="card-actions float-right">
+              <div class="dropdown show">
+                <a href="#" data-toggle="dropdown" data-display="static">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-more-horizontal align-middle"
+                  >
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="19" cy="12" r="1"></circle>
+                    <circle cx="5" cy="12" r="1"></circle>
+                  </svg>
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </div>
+            </div>
+            <h5 class="card-title">Upcoming</h5>
+            <h6 class="card-subtitle text-muted">
+              Nam pretium turpis et arcu. Duis arcu tortor.
+            </h6>
+          </div>
+
+          <div class="card-body p-3">
+            <div class="card mb-3 bg-light">
+              <div class="card-body p-3">
+                <div class="float-right mr-n2">
+                  <label class="custom-control custom-checkbox">
+                    <input
+                      type="checkbox"
+                      class="custom-control-input"
+                      checked=""
+                    />
+                    <span class="custom-control-label"></span>
+                  </label>
+                </div>
+                <p>
+                  Curabitur ligula sapien, tincidunt non, euismod vitae, posuere
+                  imperdiet, leo. Maecenas malesuada.
+                </p>
+                <div class="float-right mt-n1">
+                  <img
+                    src="https://bootdey.com/img/Content/avatar/avatar6.png"
+                    width="32"
+                    height="32"
+                    class="rounded-circle"
+                    alt="Avatar"
+                  />
+                </div>
+                <a class="btn btn-outline-primary btn-sm" href="#">View</a>
+              </div>
+            </div>
+
+            <a href="#" class="btn btn-primary btn-block">Add new</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6 col-xl-3">
+        <div class="card card-border-warning">
+          <div class="card-header">
+            <div class="card-actions float-right">
+              <div class="dropdown show">
+                <a href="#" data-toggle="dropdown" data-display="static">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-more-horizontal align-middle"
+                  >
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="19" cy="12" r="1"></circle>
+                    <circle cx="5" cy="12" r="1"></circle>
+                  </svg>
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </div>
+            </div>
+            <h5 class="card-title">In Progress</h5>
+            <h6 class="card-subtitle text-muted">
+              Nam pretium turpis et arcu. Duis arcu tortor.
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="card mb-3 bg-light">
+              <div class="card-body p-3">
+                <div class="float-right mr-n2">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" />
+                    <span class="custom-control-label"></span>
+                  </label>
+                </div>
+                <p>
+                  Curabitur ligula sapien, tincidunt non, euismod vitae, posuere
+                  imperdiet, leo. Maecenas malesuada.
+                </p>
+                <div class="float-right mt-n1">
+                  <img
+                    src="https://bootdey.com/img/Content/avatar/avatar6.png"
+                    width="32"
+                    height="32"
+                    class="rounded-circle"
+                    alt="Avatar"
+                  />
+                </div>
+                <a class="btn btn-outline-primary btn-sm" href="#">View</a>
+              </div>
+            </div>
+            <a href="#" class="btn btn-primary btn-block">Add new</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6 col-xl-3">
+        <div class="card card-border-success">
+          <div class="card-header">
+            <div class="card-actions float-right">
+              <div class="dropdown show">
+                <a href="#" data-toggle="dropdown" data-display="static">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-more-horizontal align-middle"
+                  >
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="19" cy="12" r="1"></circle>
+                    <circle cx="5" cy="12" r="1"></circle>
+                  </svg>
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </div>
+            </div>
+            <h5 class="card-title">Completed</h5>
+            <h6 class="card-subtitle text-muted">
+              Nam pretium turpis et arcu. Duis arcu tortor.
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="card mb-3 bg-light">
+              <div class="card-body p-3">
+                <div class="float-right mr-n2">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" />
+                    <span class="custom-control-label"></span>
+                  </label>
+                </div>
+                <p>
+                  Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget,
+                  imperdiet nec, imperdiet iaculis, ipsum.
+                </p>
+                <div class="float-right mt-n1">
+                  <img
+                    src="https://bootdey.com/img/Content/avatar/avatar6.png"
+                    width="32"
+                    height="32"
+                    class="rounded-circle"
+                    alt="Avatar"
+                  />
+                </div>
+                <a class="btn btn-outline-primary btn-sm" href="#">View</a>
+              </div>
+            </div>
+            <a href="#" class="btn btn-primary btn-block">Add new</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<style type="text/css">
+  body {
+    margin-top: 20px;
+    background: #fafafa;
+  }
+
+  .card {
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.025);
+  }
+
+  .card-border-primary {
+    border-top: 4px solid #2979ff;
+  }
+
+  .card-border-secondary {
+    border-top: 4px solid #efefef;
+  }
+
+  .card-border-success {
+    border-top: 4px solid #00c853;
+  }
+
+  .card-border-info {
+    border-top: 4px solid #3d5afe;
+  }
+
+  .card-border-warning {
+    border-top: 4px solid #ff9100;
+  }
+
+  .card-border-danger {
+    border-top: 4px solid #ff1744;
+  }
+
+  .card-border-light {
+    border-top: 4px solid #f8f9fa;
+  }
+
+  .card-border-dark {
+    border-top: 4px solid #6c757d;
+  }
+
+  .card-header {
+    border-bottom-width: 1px;
+  }
+
+  .card-actions a {
+    color: #495057;
+    text-decoration: none;
+  }
+
+  .card-actions svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .card-actions .dropdown {
+    line-height: 1.4;
+  }
+
+  .card-title {
+    font-weight: 500;
+    margin-top: 0.1rem;
+  }
+
+  .card-subtitle {
+    font-weight: 400;
+  }
+
+  .card-table {
+    margin-bottom: 0;
+  }
+
+  .card-table tr td:first-child,
+  .card-table tr th:first-child {
+    padding-left: 1.25rem;
+  }
+
+  .card-table tr td:last-child,
+  .card-table tr th:last-child {
+    padding-right: 1.25rem;
+  }
+
+  .card-img-top {
+    height: 100%;
+  }
+  .card {
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.025);
+  }
+
+  .card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #e5e9f2;
+    border-radius: 0.2rem;
+  }
+
+  .card-header:first-child {
+    border-radius: calc(0.2rem - 1px) calc(0.2rem - 1px) 0 0;
+  }
+
+  .card-header {
+    border-bottom-width: 1px;
+  }
+  .card-header {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0;
+    color: inherit;
+    background-color: #fff;
+    border-bottom: 1px solid #e5e9f2;
+  }
+</style>
